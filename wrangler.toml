@@ -1,0 +1,8 @@
+name = "quran-developer-data-kit"
+compatibility_date = "2026-01-01"
+
+[site]
+bucket = "./dist"
+
+[build]
+command = "npm install --legacy-peer-deps && npm run build"
