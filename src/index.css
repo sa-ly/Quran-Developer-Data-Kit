@@ -1,0 +1,110 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-quran: 'Amiri Quran', 'Scheherazade New', 'Amiri', 'Traditional Arabic', 'Noto Naskh Arabic', serif;
+    --font-arabic: 'Cairo', 'Segoe UI', Tahoma, Arial, sans-serif;
+  }
+
+  body {
+    font-family: 'Cairo', 'Segoe UI', Tahoma, Arial, sans-serif;
+    background-color: #FAF8F5;
+    color: #1C1917;
+  }
+}
+
+/* Ensure font-serif and font-sans have robust Arabic fallbacks */
+.font-serif {
+  font-family: 'Amiri', 'Scheherazade New', 'Cairo', 'Traditional Arabic', serif !important;
+}
+
+.font-sans {
+  font-family: 'Cairo', 'Segoe UI', Tahoma, Arial, sans-serif !important;
+}
+
+.font-quran {
+  font-family: 'Amiri Quran', 'Scheherazade New', 'Amiri', 'Traditional Arabic', 'Noto Naskh Arabic', serif;
+  line-height: 2.3;
+  word-spacing: 2px;
+}
+
+.font-amiri {
+  font-family: 'Amiri', 'Scheherazade New', 'Traditional Arabic', serif;
+}
+
+.font-scheherazade {
+  font-family: 'Scheherazade New', 'Amiri', 'Traditional Arabic', serif;
+}
+
+.font-cairo {
+  font-family: 'Cairo', 'Segoe UI', Tahoma, Arial, sans-serif;
+}
+
+/* Tajweed Color Coding - Standard Mus'haf Conventions */
+.tajweed-madd {
+  color: #DC2626; /* مد لازم وواجب ومتصل: أحمر قاني */
+  font-weight: 600;
+}
+
+.tajweed-madd-jaiz {
+  color: #EA580C; /* مد جائز ومنفصل: برتقالي داكن */
+  font-weight: 500;
+}
+
+.tajweed-ghunnah {
+  color: #D97706; /* غنة مشددة: كهرماني/عسلي */
+  font-weight: 600;
+}
+
+.tajweed-idgham {
+  color: #059669; /* إدغام بغنة: أخضر زمردي */
+  font-weight: 600;
+}
+
+.tajweed-ikhfa {
+  color: #2563EB; /* إخفاء: أزرق */
+  font-weight: 600;
+}
+
+.tajweed-iqlab {
+  color: #7C3AED; /* إقلاب: بنفسجي */
+  font-weight: 600;
+}
+
+.tajweed-qalqalah {
+  color: #0284C7; /* قلقلة: سماوي */
+  font-weight: 700;
+}
+
+.tajweed-silent {
+  color: #9CA3AF; /* لا يلفظ / همزة وصل */
+}
+
+/* Islamic Manuscript Ornaments */
+.islamic-border-frame {
+  border: 1px solid #D6CEBE;
+  box-shadow: 0 0 0 4px #FAF8F5, 0 0 0 5px #C5A059;
+}
+
+.parchment-pattern {
+  background-color: #FDFBF7;
+  background-image: radial-gradient(#E8E2D2 0.75px, transparent 0.75px), radial-gradient(#E8E2D2 0.75px, #FDFBF7 0.75px);
+  background-size: 30px 30px;
+  background-position: 0 0, 15px 15px;
+}
+
+/* Custom Scrollbar for smooth Quran reading */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #F5F1E8;
+}
+::-webkit-scrollbar-thumb {
+  background: #D4C5A9;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #BFA885;
+}

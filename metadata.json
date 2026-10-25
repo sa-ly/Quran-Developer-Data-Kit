@@ -1,0 +1,6 @@
+{
+  "name": "المصحف الشريف الرقمي - Quran Kareem",
+  "description": "تطبيق المصحف الشريف بالرسم العثماني المعتمد، أحكام التجويد الملونة، خطوط مجمع الملك فهد وأميري، التلاوات الصوتية، والتدبر الذكي المدعوم بالذكاء الاصطناعي مع الامتثال الكامل للتراخيص.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
