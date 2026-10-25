@@ -37,30 +37,42 @@ export function getAyahAudioUrl(reciterId: string, surahNumber: number, ayahNumb
   return `${reciter.cdnPrefix}${sStr}${aStr}.mp3`;
 }
 
-// In-memory cache for loaded surahs and pages
-const surahCache = new Map<number, Ayah[]>();
+// In-memory cache for loaded surahs and pages with composite keys
+const surahCache = new Map<string, Ayah[]>();
 const pageCache = new Map<number, Ayah[]>();
+const tafsirTextCache = new Map<string, Record<number, string>>();
 
 // Seed cache with embedded surahs
 Object.entries(EMBEDDED_SURAHS).forEach(([sNum, ayahs]) => {
-  surahCache.set(Number(sNum), ayahs);
+  surahCache.set(`${sNum}-ar.muyassar-`, ayahs);
 });
 
 /**
- * Fetch surah verses with Tanzil Uthmanic text and classical tafsir
+ * Fetch surah verses with Tanzil Uthmanic text, designated tafsir, and optional language translation
  */
-export async function fetchSurahVerses(surahNumber: number): Promise<Ayah[]> {
-  if (surahCache.has(surahNumber)) {
-    return surahCache.get(surahNumber)!;
+export async function fetchSurahVerses(
+  surahNumber: number,
+  tafsirEdition: string = 'ar.muyassar',
+  translationEdition?: string
+): Promise<Ayah[]> {
+  const cacheKey = `${surahNumber}-${tafsirEdition}-${translationEdition || ''}`;
+  if (surahCache.has(cacheKey)) {
+    return surahCache.get(cacheKey)!;
   }
 
   const meta = getSurahMeta(surahNumber);
   if (!meta) return [];
 
+  // Compose editions query
+  const editions = ['quran-uthmani', tafsirEdition];
+  if (translationEdition && translationEdition !== tafsirEdition && translationEdition !== 'ar.muyassar') {
+    editions.push(translationEdition);
+  }
+
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 6000);
-    const res = await fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/editions/quran-uthmani,ar.muyassar`, {
+    const timeoutId = setTimeout(() => controller.abort(), 6500);
+    const res = await fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/editions/${editions.join(',')}`, {
       signal: controller.signal
     });
     clearTimeout(timeoutId);
@@ -68,11 +80,13 @@ export async function fetchSurahVerses(surahNumber: number): Promise<Ayah[]> {
     if (res.ok) {
       const data = await res.json();
       const uthmaniEdition = data.data?.[0]?.ayahs || [];
-      const tafsirEdition = data.data?.[1]?.ayahs || [];
+      const tafsirList = data.data?.[1]?.ayahs || [];
+      const transList = editions.length > 2 ? (data.data?.[2]?.ayahs || []) : [];
 
       const ayahs: Ayah[] = uthmaniEdition.map((item: any, idx: number) => {
         const text = item.text;
-        const tafsir = tafsirEdition[idx]?.text || '';
+        const tafsir = tafsirList[idx]?.text || '';
+        const translation = transList[idx]?.text || '';
         return {
           numberInSurah: item.numberInSurah,
           number: item.number,
@@ -82,12 +96,16 @@ export async function fetchSurahVerses(surahNumber: number): Promise<Ayah[]> {
           juz: item.juz || meta.juz,
           hizb: item.hizbQuarter,
           sajda: Boolean(item.sajda),
-          tafsir: tafsir
+          tafsir: tafsir,
+          translation: translation || undefined,
+          tafsirs: {
+            [tafsirEdition]: tafsir
+          }
         };
       });
 
       if (ayahs.length > 0) {
-        surahCache.set(surahNumber, ayahs);
+        surahCache.set(cacheKey, ayahs);
         return ayahs;
       }
     }
@@ -95,7 +113,14 @@ export async function fetchSurahVerses(surahNumber: number): Promise<Ayah[]> {
     console.warn('Network fetch error for Surah, falling back to local fallback data:', err);
   }
 
-  // Fallback: create placeholder template verses so UI is robust
+  // Fallback: check if we have base embedded surah
+  const baseEmbedded = EMBEDDED_SURAHS[surahNumber];
+  if (baseEmbedded) {
+    surahCache.set(cacheKey, baseEmbedded);
+    return baseEmbedded;
+  }
+
+  // General Fallback
   const fallbackAyahs: Ayah[] = Array.from({ length: meta.numberOfAyahs }, (_, i) => {
     const num = i + 1;
     return {
@@ -107,12 +132,46 @@ export async function fetchSurahVerses(surahNumber: number): Promise<Ayah[]> {
       simpleText: `اية ${num} من سورة ${meta.name}`,
       page: meta.page,
       juz: meta.juz,
-      tafsir: `تفسير الآية الكريمة ${num} من سورة ${meta.name} (التفسير الميسر)`
+      tafsir: `تفسير الآية الكريمة ${num} من سورة ${meta.name} (${tafsirEdition})`
     };
   });
 
-  surahCache.set(surahNumber, fallbackAyahs);
+  surahCache.set(cacheKey, fallbackAyahs);
   return fallbackAyahs;
+}
+
+/**
+ * Fetch a specific Tafsir edition for all verses of a Surah
+ */
+export async function fetchSpecificTafsir(surahNumber: number, tafsirEdition: string): Promise<Record<number, string>> {
+  const cacheKey = `${surahNumber}-${tafsirEdition}`;
+  if (tafsirTextCache.has(cacheKey)) {
+    return tafsirTextCache.get(cacheKey)!;
+  }
+
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 6500);
+    const res = await fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/${tafsirEdition}`, {
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+
+    if (res.ok) {
+      const data = await res.json();
+      const list = data.data?.ayahs || [];
+      const map: Record<number, string> = {};
+      list.forEach((item: any) => {
+        map[item.numberInSurah] = item.text;
+      });
+      tafsirTextCache.set(cacheKey, map);
+      return map;
+    }
+  } catch (e) {
+    console.warn(`Could not fetch tafsir ${tafsirEdition} for surah ${surahNumber}:`, e);
+  }
+
+  return {};
 }
 
 /**
@@ -142,7 +201,7 @@ export async function fetchPageVerses(pageNumber: number): Promise<{ surahMeta: 
 
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 6000);
+    const timeoutId = setTimeout(() => controller.abort(), 6500);
     const res = await fetch(`https://api.alquran.cloud/v1/page/${pageNumber}/quran-uthmani`, {
       signal: controller.signal
     });

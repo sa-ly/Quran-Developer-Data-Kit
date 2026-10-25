@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer base {
   :root {
     --font-quran: 'Amiri Quran', 'Scheherazade New', 'Amiri', 'Traditional Arabic', 'Noto Naskh Arabic', serif;
@@ -10,6 +12,12 @@
     font-family: 'Cairo', 'Segoe UI', Tahoma, Arial, sans-serif;
     background-color: #FAF8F5;
     color: #1C1917;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  html.dark body, body.dark {
+    background-color: #0c1311;
+    color: #F5F5F4;
   }
 }
 
@@ -40,50 +48,78 @@
   font-family: 'Cairo', 'Segoe UI', Tahoma, Arial, sans-serif;
 }
 
-/* Tajweed Color Coding - Standard Mus'haf Conventions */
+/* Tajweed Color Coding - High Contrast for Light and Dark Modes */
 .tajweed-madd {
-  color: #DC2626; /* مد لازم وواجب ومتصل: أحمر قاني */
-  font-weight: 600;
+  color: #DC2626 !important; /* مد لازم وواجب: أحمر قاني */
+  font-weight: 700;
+}
+.dark .tajweed-madd {
+  color: #F87171 !important; /* أحمر مرجاني ناصع في الوضع الليلي */
 }
 
 .tajweed-madd-jaiz {
-  color: #EA580C; /* مد جائز ومنفصل: برتقالي داكن */
-  font-weight: 500;
+  color: #EA580C !important; /* مد جائز ومنفصل وعارض: برتقالي ناصع */
+  font-weight: 600;
+}
+.dark .tajweed-madd-jaiz {
+  color: #FB923C !important;
 }
 
 .tajweed-ghunnah {
-  color: #D97706; /* غنة مشددة: كهرماني/عسلي */
-  font-weight: 600;
+  color: #D97706 !important; /* غنة مشددة: كهرماني/عسلي */
+  font-weight: 700;
+}
+.dark .tajweed-ghunnah {
+  color: #FBBF24 !important;
 }
 
 .tajweed-idgham {
-  color: #059669; /* إدغام بغنة: أخضر زمردي */
-  font-weight: 600;
+  color: #059669 !important; /* إدغام بغنة: أخضر زمردي */
+  font-weight: 700;
+}
+.dark .tajweed-idgham {
+  color: #34D399 !important;
 }
 
 .tajweed-ikhfa {
-  color: #2563EB; /* إخفاء: أزرق */
-  font-weight: 600;
+  color: #2563EB !important; /* إخفاء: أزرق ملكي */
+  font-weight: 700;
+}
+.dark .tajweed-ikhfa {
+  color: #60A5FA !important;
 }
 
 .tajweed-iqlab {
-  color: #7C3AED; /* إقلاب: بنفسجي */
-  font-weight: 600;
+  color: #7C3AED !important; /* إقلاب: بنفسجي */
+  font-weight: 700;
+}
+.dark .tajweed-iqlab {
+  color: #C084FC !important;
 }
 
 .tajweed-qalqalah {
-  color: #0284C7; /* قلقلة: سماوي */
+  color: #0284C7 !important; /* قلقلة: أزرق سماوي ناصع */
   font-weight: 700;
+}
+.dark .tajweed-qalqalah {
+  color: #38BDF8 !important;
 }
 
 .tajweed-silent {
-  color: #9CA3AF; /* لا يلفظ / همزة وصل */
+  color: #9CA3AF !important; /* لا يلفظ / همزة وصل */
+}
+.dark .tajweed-silent {
+  color: #64748B !important;
 }
 
 /* Islamic Manuscript Ornaments */
 .islamic-border-frame {
   border: 1px solid #D6CEBE;
   box-shadow: 0 0 0 4px #FAF8F5, 0 0 0 5px #C5A059;
+}
+.dark .islamic-border-frame {
+  border: 1px solid #2D3A34;
+  box-shadow: 0 0 0 4px #0c1311, 0 0 0 5px #8C7038;
 }
 
 .parchment-pattern {
@@ -92,8 +128,14 @@
   background-size: 30px 30px;
   background-position: 0 0, 15px 15px;
 }
+.dark .parchment-pattern {
+  background-color: #121A17;
+  background-image: radial-gradient(#22332D 0.75px, transparent 0.75px), radial-gradient(#22332D 0.75px, #121A17 0.75px);
+  background-size: 30px 30px;
+  background-position: 0 0, 15px 15px;
+}
 
-/* Custom Scrollbar for smooth Quran reading */
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -101,10 +143,19 @@
 ::-webkit-scrollbar-track {
   background: #F5F1E8;
 }
+.dark ::-webkit-scrollbar-track {
+  background: #141E1A;
+}
 ::-webkit-scrollbar-thumb {
   background: #D4C5A9;
   border-radius: 9999px;
 }
+.dark ::-webkit-scrollbar-thumb {
+  background: #3B4E45;
+}
 ::-webkit-scrollbar-thumb:hover {
   background: #BFA885;
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #4F675B;
 }

@@ -25,14 +25,12 @@ export const TafsirTadabburModal: React.FC<TafsirTadabburModalProps> = ({
     linguisticGems?: string;
   } | null>(null);
   const [loadingAi, setLoadingAi] = useState(false);
-  const [errorAi, setErrorAi] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
   if (!isOpen || !ayah) return null;
 
   const handleFetchAiTadabbur = async () => {
     setLoadingAi(true);
-    setErrorAi(null);
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 6000);
@@ -69,7 +67,6 @@ export const TafsirTadabburModal: React.FC<TafsirTadabburModalProps> = ({
         linguisticGems: 'فصاحة النظم القرآني وإيجازه المعجز الذي يجمع المعاني الغزيرة بأوجز وأبدع عبارة.'
       });
     } catch {
-      // Local fallback without throwing error
       setAiTadabbur({
         tadabbur: `تأمل في قوله تعالى: "${ayah.text}". تفيض هذه الآية العظيمة من سورة ${surahName} بأنوار التوحيد والهداية، وتبين للمؤمن سبيل الاستقامة والاعتصام برحمة الله وفضله في كل حال، وتستحث الفؤاد على تدبر عظمة الخالق سبحانه وحكمته البالغة.${ayah.tafsir ? ` ومما يزيدها جلاءً ما قرره المفسرون: ${ayah.tafsir}` : ''}`,
         keyTakeaway: 'الاعتصام بكتاب الله واستشعار معيته ولطفه في السر والعلن.',
@@ -108,25 +105,25 @@ ${aiTadabbur.keyTakeaway || ''}`
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-stone-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-stone-900/60 dark:bg-black/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
       <div
-        className="relative w-full max-w-2xl bg-white rounded-xl shadow-2xl border border-stone-200 overflow-hidden"
+        className="relative w-full max-w-2xl bg-white dark:bg-[#121A17] rounded-2xl shadow-2xl border border-stone-200 dark:border-stone-800 overflow-hidden flex flex-col max-h-[88vh]"
         role="dialog"
         aria-labelledby="tafsir-modal-title"
         aria-modal="true"
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-stone-200 bg-[#FAF8F5]">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-stone-200 dark:border-stone-800 bg-[#FAF8F5] dark:bg-[#141E1B]">
           <div className="flex items-center gap-2">
-            <BookOpen className="w-5 h-5 text-[#064E3B]" />
-            <h2 id="tafsir-modal-title" className="text-lg font-bold text-stone-900 font-serif">
+            <BookOpen className="w-5 h-5 text-[#064E3B] dark:text-emerald-400" />
+            <h2 id="tafsir-modal-title" className="text-base sm:text-lg font-bold text-stone-900 dark:text-stone-100 font-serif">
               تفسير وتدبر: سورة {surahName} (الآية {ayah.numberInSurah})
             </h2>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={handleCopy}
-              className="p-1.5 text-stone-500 hover:text-stone-800 hover:bg-stone-200/60 rounded-lg transition-colors"
+              className="p-1.5 text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 hover:bg-stone-200/60 dark:hover:bg-stone-800 rounded-lg transition-colors"
               title="نسخ الآية والتفسير"
               aria-label="نسخ"
             >
@@ -134,7 +131,7 @@ ${aiTadabbur.keyTakeaway || ''}`
             </button>
             <button
               onClick={onClose}
-              className="p-1.5 text-stone-500 hover:text-stone-800 hover:bg-stone-200/60 rounded-lg transition-colors"
+              className="p-1.5 text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 hover:bg-stone-200/60 dark:hover:bg-stone-800 rounded-lg transition-colors"
               aria-label="إغلاق نافذة التفسير"
             >
               <X className="w-5 h-5" />
@@ -143,8 +140,8 @@ ${aiTadabbur.keyTakeaway || ''}`
         </div>
 
         {/* Verse preview banner */}
-        <div className="p-5 bg-[#FDFBF7] border-b border-stone-200 text-center">
-          <p className="font-quran text-xl sm:text-2xl text-stone-900 leading-loose">
+        <div className="p-5 bg-[#FDFBF7] dark:bg-[#15201C] border-b border-stone-200 dark:border-stone-800 text-center">
+          <p className="font-quran text-xl sm:text-2xl text-stone-900 dark:text-amber-100 leading-loose">
             {ayah.text}
           </p>
           <div className="flex items-center justify-center gap-4 mt-3">
@@ -157,24 +154,24 @@ ${aiTadabbur.keyTakeaway || ''}`
                 <span>استماع للآية</span>
               </button>
             )}
-            <span className="text-xs text-stone-500">
+            <span className="text-xs text-stone-500 dark:text-stone-400">
               الصفحة {ayah.page} · الجزء {ayah.juz}
             </span>
           </div>
         </div>
 
-        {/* Segmented Tab Controls (Allowed per frontend-design) */}
-        <div className="flex items-center gap-1 p-2 bg-stone-100 border-b border-stone-200">
+        {/* Segmented Tab Controls */}
+        <div className="flex items-center gap-1 p-2 bg-stone-100 dark:bg-stone-900 border-b border-stone-200 dark:border-stone-800">
           <button
             onClick={() => setActiveTab('tafsir')}
             className={`flex-1 py-1.5 px-3 text-xs font-medium rounded-md transition-colors flex items-center justify-center gap-1.5 ${
               activeTab === 'tafsir'
-                ? 'bg-white text-stone-900 shadow-xs font-semibold'
-                : 'text-stone-600 hover:text-stone-900'
+                ? 'bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 shadow-xs font-semibold'
+                : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200'
             }`}
           >
             <BookOpen className="w-3.5 h-3.5" />
-            <span>التفسير الميسر المعتمد</span>
+            <span>التفسير المعتمد</span>
           </button>
           <button
             onClick={() => {
@@ -185,8 +182,8 @@ ${aiTadabbur.keyTakeaway || ''}`
             }}
             className={`flex-1 py-1.5 px-3 text-xs font-medium rounded-md transition-colors flex items-center justify-center gap-1.5 ${
               activeTab === 'tadabbur'
-                ? 'bg-white text-stone-900 shadow-xs font-semibold'
-                : 'text-stone-600 hover:text-stone-900'
+                ? 'bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 shadow-xs font-semibold'
+                : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200'
             }`}
           >
             <Sparkles className="w-3.5 h-3.5 text-[#C5A059]" />
@@ -195,12 +192,12 @@ ${aiTadabbur.keyTakeaway || ''}`
         </div>
 
         {/* Tab Content */}
-        <div className="p-6 max-h-[50vh] overflow-y-auto">
+        <div className="p-5 sm:p-6 max-h-[50vh] overflow-y-auto">
           {activeTab === 'tafsir' && (
             <div className="space-y-4">
-              <div className="prose text-stone-800 leading-relaxed font-sans text-sm sm:text-base">
+              <div className="text-stone-800 dark:text-stone-200 leading-relaxed font-sans text-sm sm:text-base">
                 {ayah.tafsir ? (
-                  <p className="bg-stone-50/70 p-4 rounded-lg border border-stone-200">
+                  <p className="bg-stone-50/70 dark:bg-[#15201C] p-4 rounded-xl border border-stone-200 dark:border-stone-800">
                     {ayah.tafsir}
                   </p>
                 ) : (
@@ -209,8 +206,8 @@ ${aiTadabbur.keyTakeaway || ''}`
                   </p>
                 )}
               </div>
-              <div className="text-[11px] text-stone-400 text-left pt-2">
-                المصدر: التفسير الميسر - مجمع الملك فهد لطباعة المصحف الشريف
+              <div className="text-[11px] text-stone-400 dark:text-stone-500 text-left pt-1">
+                المصدر: مجمع الملك فهد لطباعة المصحف الشريف بالمدينة المنورة
               </div>
             </div>
           )}
@@ -218,85 +215,53 @@ ${aiTadabbur.keyTakeaway || ''}`
           {activeTab === 'tadabbur' && (
             <div className="space-y-4">
               {loadingAi && (
-                <div className="py-8 text-center space-y-3">
-                  <Loader2 className="w-6 h-6 animate-spin text-[#064E3B] mx-auto" />
-                  <p className="text-xs text-stone-600">
-                    جاري استخراج درر ولطائف الآية الكريمة عبر Google AI...
+                <div className="py-12 text-center space-y-3">
+                  <Loader2 className="w-8 h-8 border-2 text-[#064E3B] dark:text-emerald-400 animate-spin mx-auto" />
+                  <p className="text-xs text-stone-500 dark:text-stone-400 font-medium">
+                    جاري استخلاص اللطائف والهدايات الإيمانية للآية بواسطة الذكاء الاصطناعي...
                   </p>
                 </div>
               )}
 
-              {errorAi && (
-                <div className="p-3 bg-red-50 text-red-700 text-xs rounded-lg border border-red-200">
-                  {errorAi}
-                </div>
-              )}
-
-              {aiTadabbur && !loadingAi && (
-                <div className="space-y-4 text-sm text-stone-800">
-                  {/* Tadabbur paragraph */}
-                  <div className="p-4 bg-emerald-50/40 rounded-lg border border-emerald-200/80 space-y-1.5">
-                    <div className="flex items-center gap-1.5 font-bold text-[#064E3B] text-xs">
-                      <Compass className="w-4 h-4" />
-                      <span>وقفة تدبرية:</span>
+              {aiTadabbur && (
+                <div className="space-y-4 text-sm">
+                  {/* Tadabbur Reflection Box */}
+                  <div className="p-4 bg-emerald-50/50 dark:bg-emerald-950/30 rounded-xl border border-emerald-200/80 dark:border-emerald-800/50 space-y-1.5">
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-[#064E3B] dark:text-emerald-400 font-serif">
+                      <Sparkles className="w-3.5 h-3.5 text-[#C5A059]" />
+                      <span>الإشراقة والتدبر القرآني:</span>
                     </div>
-                    <p className="leading-relaxed text-stone-800">{aiTadabbur.tadabbur}</p>
+                    <p className="text-stone-800 dark:text-stone-200 leading-relaxed text-xs sm:text-sm">
+                      {aiTadabbur.tadabbur}
+                    </p>
                   </div>
 
-                  {/* Key takeaway */}
-                  {aiTadabbur.keyTakeaway && (
-                    <div className="p-3 bg-amber-50/50 rounded-lg border border-amber-200 space-y-1">
-                      <span className="font-bold text-amber-900 text-xs flex items-center gap-1.5">
-                        <Lightbulb className="w-4 h-4 text-amber-700" />
-                        الهداية المركزية:
-                      </span>
-                      <p className="text-stone-800 text-xs">{aiTadabbur.keyTakeaway}</p>
-                    </div>
-                  )}
-
-                  {/* Practical steps */}
-                  {aiTadabbur.practicalSteps && aiTadabbur.practicalSteps.length > 0 && (
-                    <div className="space-y-2">
-                      <h4 className="font-bold text-stone-900 text-xs">
-                        تطبيقات سلوكية وعملية من وحي الآية:
-                      </h4>
-                      <ul className="space-y-1.5">
+                  {/* Practical Steps */}
+                  {aiTadabbur.practicalSteps && (
+                    <div className="space-y-1.5">
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-stone-800 dark:text-stone-200">
+                        <Compass className="w-3.5 h-3.5 text-amber-700 dark:text-amber-400" />
+                        <span>ثمرات عملية للتطبيق في الحياة اليومية:</span>
+                      </div>
+                      <ul className="space-y-1 pr-4 list-disc text-stone-700 dark:text-stone-300 text-xs sm:text-sm">
                         {aiTadabbur.practicalSteps.map((step, idx) => (
-                          <li
-                            key={idx}
-                            className="flex items-start gap-2 text-xs text-stone-700 bg-stone-50 p-2 rounded-md border border-stone-200/60"
-                          >
-                            <span className="w-4 h-4 rounded-full bg-[#064E3B] text-white flex items-center justify-center text-[10px] shrink-0 mt-0.5">
-                              {idx + 1}
-                            </span>
-                            <span>{step}</span>
+                          <li key={idx} className="leading-relaxed">
+                            {step}
                           </li>
                         ))}
                       </ul>
                     </div>
                   )}
 
-                  {/* Linguistic gems */}
+                  {/* Linguistic Gems */}
                   {aiTadabbur.linguisticGems && (
-                    <div className="p-3 bg-stone-50 rounded-lg border border-stone-200 text-xs text-stone-700">
-                      <span className="font-bold text-stone-900 block mb-1">
-                        لطيفة بلاغية:
-                      </span>
-                      {aiTadabbur.linguisticGems}
+                    <div className="p-3 bg-amber-50/60 dark:bg-amber-950/30 rounded-lg border border-amber-200/60 dark:border-amber-800/40 text-xs text-amber-900 dark:text-amber-200">
+                      <span className="font-bold block mb-1">لطيفة لغوية وبيانية:</span>
+                      <p className="leading-relaxed text-stone-700 dark:text-stone-300">
+                        {aiTadabbur.linguisticGems}
+                      </p>
                     </div>
                   )}
-                </div>
-              )}
-
-              {!aiTadabbur && !loadingAi && !errorAi && (
-                <div className="text-center py-6">
-                  <button
-                    onClick={handleFetchAiTadabbur}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-[#064E3B] text-white text-xs font-medium rounded-lg hover:bg-[#043E2F] transition-colors shadow-xs"
-                  >
-                    <Sparkles className="w-3.5 h-3.5 text-[#C5A059]" />
-                    <span>بدء استخراج التدبر القرآني بالذكاء الاصطناعي</span>
-                  </button>
                 </div>
               )}
             </div>
@@ -304,13 +269,10 @@ ${aiTadabbur.keyTakeaway || ''}`
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-3.5 bg-stone-50 border-t border-stone-200 flex items-center justify-between">
-          <span className="text-[11px] text-stone-500">
-            تدبر القرآن الكريم هداية للقلب وبصيرة للعمل
-          </span>
+        <div className="px-6 py-3.5 bg-stone-50 dark:bg-[#141E1B] border-t border-stone-200 dark:border-stone-800 flex justify-end">
           <button
             onClick={onClose}
-            className="px-4 py-1.5 text-xs font-medium text-stone-700 bg-white border border-stone-300 hover:bg-stone-50 rounded-lg transition-colors"
+            className="px-5 py-1.5 text-xs font-bold text-white bg-[#064E3B] hover:bg-[#043E2F] rounded-lg transition-colors"
           >
             إغلاق
           </button>

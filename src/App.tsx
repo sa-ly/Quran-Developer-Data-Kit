@@ -10,6 +10,8 @@ import { MushafPageView } from './components/MushafPageView';
 import { SurahIndexView } from './components/SurahIndexView';
 import { AudioPlayerBar } from './components/AudioPlayerBar';
 import { TafsirTadabburModal } from './components/TafsirTadabburModal';
+import { TafsirLibraryModal } from './components/TafsirLibraryModal';
+import { LanguageSelectorModal } from './components/LanguageSelectorModal';
 import { TajweedGuideModal } from './components/TajweedGuideModal';
 import { LicensesAttributionModal } from './components/LicensesAttributionModal';
 import { SearchModal } from './components/SearchModal';
@@ -19,12 +21,45 @@ import { Footer } from './components/Footer';
 import { Ayah, SurahMeta, Bookmark } from './types/quran';
 import { SURAH_LIST, getSurahMeta, getSurahByPage } from './data/surahList';
 import { fetchSurahVerses, fetchPageVerses } from './services/quranApi';
+import { ACCREDITED_TAFSIR_EDITIONS, TafsirEdition } from './data/tafsirEditions';
+import { SUPPORTED_LANGUAGES, LanguageConfig } from './utils/i18n';
 
 export default function App() {
   // Navigation & View State
   const [activeView, setActiveView] = useState<'reader' | 'pages' | 'index'>('reader');
   const [currentSurahNumber, setCurrentSurahNumber] = useState<number>(1);
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
+
+  // Internationalization State
+  const [currentLanguage, setCurrentLanguage] = useState<string>(() => {
+    try {
+      return localStorage.getItem('quran_language') || 'ar';
+    } catch {
+      return 'ar';
+    }
+  });
+
+  // Dark Mode State
+  const [darkMode, setDarkMode] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem('quran_dark_mode');
+      if (saved !== null) return saved === 'true';
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    } catch {
+      return false;
+    }
+  });
+
+  // Active Tafsir State
+  const [activeTafsir, setActiveTafsir] = useState<TafsirEdition>(() => {
+    try {
+      const saved = localStorage.getItem('quran_active_tafsir_id');
+      const found = ACCREDITED_TAFSIR_EDITIONS.find(t => t.id === saved);
+      return found || ACCREDITED_TAFSIR_EDITIONS[0];
+    } catch {
+      return ACCREDITED_TAFSIR_EDITIONS[0];
+    }
+  });
 
   // Data State
   const [surahAyahs, setSurahAyahs] = useState<Ayah[]>([]);
@@ -39,6 +74,8 @@ export default function App() {
 
   // Modals & Drawers State
   const [tafsirModalOpen, setTafsirModalOpen] = useState<boolean>(false);
+  const [tafsirLibraryOpen, setTafsirLibraryOpen] = useState<boolean>(false);
+  const [languageModalOpen, setLanguageModalOpen] = useState<boolean>(false);
   const [selectedAyahForTafsir, setSelectedAyahForTafsir] = useState<Ayah | null>(null);
   const [tajweedGuideOpen, setTajweedGuideOpen] = useState<boolean>(false);
   const [licensesModalOpen, setLicensesModalOpen] = useState<boolean>(false);
@@ -61,6 +98,34 @@ export default function App() {
   // Current active Surah metadata
   const currentSurahMeta: SurahMeta = getSurahMeta(currentSurahNumber) || SURAH_LIST[0];
 
+  // Sync Dark Mode to DOM
+  useEffect(() => {
+    try {
+      localStorage.setItem('quran_dark_mode', String(darkMode));
+    } catch (e) {
+      console.warn('Failed to save dark mode:', e);
+    }
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+      document.body.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.body.classList.remove('dark');
+    }
+  }, [darkMode]);
+
+  // Sync Language and Direction to DOM
+  useEffect(() => {
+    try {
+      localStorage.setItem('quran_language', currentLanguage);
+    } catch (e) {
+      console.warn('Failed to save language:', e);
+    }
+    const isRTL = currentLanguage === 'ar' || currentLanguage === 'ur';
+    document.documentElement.setAttribute('dir', isRTL ? 'rtl' : 'ltr');
+    document.documentElement.setAttribute('lang', currentLanguage);
+  }, [currentLanguage]);
+
   // Save bookmarks to localStorage
   useEffect(() => {
     try {
@@ -70,12 +135,14 @@ export default function App() {
     }
   }, [bookmarks]);
 
-  // Load verses when Surah changes
+  // Load verses when Surah, active Tafsir, or Language changes
   useEffect(() => {
     let isCancelled = false;
     async function loadSurah() {
       setLoadingSurah(true);
-      const ayahs = await fetchSurahVerses(currentSurahNumber);
+      const langConfig = SUPPORTED_LANGUAGES.find(l => l.code === currentLanguage);
+      const translationEdition = langConfig && langConfig.code !== 'ar' ? langConfig.translationId : undefined;
+      const ayahs = await fetchSurahVerses(currentSurahNumber, activeTafsir.apiIdentifier, translationEdition);
       if (!isCancelled) {
         setSurahAyahs(ayahs);
         setLoadingSurah(false);
@@ -85,7 +152,7 @@ export default function App() {
     return () => {
       isCancelled = true;
     };
-  }, [currentSurahNumber]);
+  }, [currentSurahNumber, activeTafsir.id, currentLanguage]);
 
   // Load page verses when Page changes
   useEffect(() => {
@@ -104,7 +171,7 @@ export default function App() {
     };
   }, [currentPageNumber]);
 
-  // Check URL query parameters (e.g. ?autostart=1)
+  // Check URL query parameters (e.g. ?autostart=1 or ?page=X)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('view') === 'pages') {
@@ -145,7 +212,6 @@ export default function App() {
       setPlayingAyah(surahAyahs[nextIdx]);
       setIsPlaying(true);
     } else {
-      // Advance to next Surah if available
       if (currentSurahNumber < 114) {
         const nextSurah = currentSurahNumber + 1;
         setCurrentSurahNumber(nextSurah);
@@ -219,18 +285,24 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAF8F5] text-stone-900 selection:bg-[#C5A059]/25 w-full max-w-full overflow-x-hidden">
-      {/* Universal Top Bar */}
+    <div className="min-h-screen flex flex-col bg-[#FAF8F5] dark:bg-[#0c1311] text-stone-900 dark:text-stone-100 selection:bg-[#C5A059]/25 w-full max-w-full overflow-x-hidden transition-colors">
+      {/* Universal Top Bar with Globe, Tafsir, Dark Mode, Tajweed */}
       <Navbar
         activeView={activeView}
         setActiveView={setActiveView}
         openSearch={() => setSearchModalOpen(true)}
         openBookmarks={() => setBookmarksDrawerOpen(true)}
         openTajweedGuide={() => setTajweedGuideOpen(true)}
+        openTafsirLibrary={() => setTafsirLibraryOpen(true)}
+        openLanguageModal={() => setLanguageModalOpen(true)}
         openLicenses={() => setLicensesModalOpen(true)}
         tajweedEnabled={tajweedEnabled}
         setTajweedEnabled={setTajweedEnabled}
         bookmarkCount={bookmarks.length}
+        darkMode={darkMode}
+        setDarkMode={setDarkMode}
+        currentLanguage={currentLanguage}
+        activeTafsirName={activeTafsir.name}
       />
 
       {/* Main Content Area */}
@@ -252,6 +324,9 @@ export default function App() {
             setFontSize={setFontSize}
             selectedFont={selectedFont}
             setSelectedFont={setSelectedFont}
+            isDark={darkMode}
+            onOpenTajweedGuide={() => setTajweedGuideOpen(true)}
+            currentLanguage={currentLanguage}
           />
         )}
 
@@ -275,6 +350,9 @@ export default function App() {
             isBookmarked={isBookmarked}
             playingAyahNumber={playingAyah?.numberInSurah ?? null}
             isPlaying={isPlaying}
+            isDark={darkMode}
+            onOpenTajweedGuide={() => setTajweedGuideOpen(true)}
+            currentLanguage={currentLanguage}
           />
         )}
 
@@ -285,6 +363,7 @@ export default function App() {
               setCurrentPageNumber(page);
               setActiveView('pages');
             }}
+            currentLanguage={currentLanguage}
           />
         )}
       </main>
@@ -318,6 +397,32 @@ export default function App() {
           if (selectedAyahForTafsir) {
             handlePlayAyah(selectedAyahForTafsir);
           }
+        }}
+      />
+
+      {/* Accredited Tafsir Library and Downloader Modal */}
+      <TafsirLibraryModal
+        isOpen={tafsirLibraryOpen}
+        onClose={() => setTafsirLibraryOpen(false)}
+        activeTafsirId={activeTafsir.id}
+        onSelectTafsir={(edition) => {
+          setActiveTafsir(edition);
+          try {
+            localStorage.setItem('quran_active_tafsir_id', edition.id);
+          } catch (e) {
+            console.warn(e);
+          }
+        }}
+        currentSurahNumber={currentSurahNumber}
+      />
+
+      {/* Multilingual Selector Modal with Globe Trigger */}
+      <LanguageSelectorModal
+        isOpen={languageModalOpen}
+        onClose={() => setLanguageModalOpen(false)}
+        currentLanguage={currentLanguage}
+        onSelectLanguage={(lang: LanguageConfig) => {
+          setCurrentLanguage(lang.code);
         }}
       />
 

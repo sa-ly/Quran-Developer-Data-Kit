@@ -19,7 +19,9 @@ export interface Ayah {
   hizb?: number;
   rub?: number;
   sajda?: boolean;
-  tafsir?: string; // Classical Al-Muyassar Tafsir
+  tafsir?: string; // Classical Al-Muyassar or chosen Tafsir
+  translation?: string; // Translated meaning in active language
+  tafsirs?: Record<string, string>; // Multi-edition tafsirs cache
 }
 
 export interface Reciter {
