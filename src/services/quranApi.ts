@@ -1,32 +1,133 @@
 import { Ayah, Reciter } from '../types/quran';
 import { EMBEDDED_SURAHS } from '../data/sampleVerses';
+import { BAQARAH_FULL_AYAHS } from '../data/baqarahFull';
 import { getSurahMeta, getSurahByPage } from '../data/surahList';
 import { removeTashkeel } from '../utils/quranSearch';
 
+/**
+ * 20 Accredited World-Renowned Qaris (Reciters) for Hafs 'an 'Asim
+ * Verified with EveryAyah.com High Quality Audio CDNs
+ */
 export const RECITERS: Reciter[] = [
   {
     id: 'alafasy',
-    name: 'مشاري راشد العفاسي',
+    name: 'مشاري بن راشد العفاسي',
     style: 'مرتل ومتقن',
     cdnPrefix: 'https://everyayah.com/data/Alafasy_128kbps/'
   },
   {
     id: 'husary',
-    name: 'محمود خليل الحصري',
-    style: 'شيخ عموم المقارئ المصرية (معلم)',
+    name: 'محمود خليل الحصري (مرتل)',
+    style: 'شيخ عموم المقارئ المصرية (ضبط التلاوة)',
     cdnPrefix: 'https://everyayah.com/data/Husary_128kbps/'
   },
   {
+    id: 'husary_mujawwad',
+    name: 'محمود خليل الحصري (مجود)',
+    style: 'المصحف المجود بالأنغام الأصيلة',
+    cdnPrefix: 'https://everyayah.com/data/Husary_Mujawwad_64kbps/'
+  },
+  {
+    id: 'minshawy',
+    name: 'محمد صديق المنشاوي (مرتل)',
+    style: 'الصوت الباكي الخاشع',
+    cdnPrefix: 'https://everyayah.com/data/Minshawy_Murattal_128kbps/'
+  },
+  {
+    id: 'minshawy_mujawwad',
+    name: 'محمد صديق المنشاوي (مجود)',
+    style: 'المصحف المجود الفريد',
+    cdnPrefix: 'https://everyayah.com/data/Minshawy_Mujawwad_192kbps/'
+  },
+  {
     id: 'abdulbasit',
-    name: 'عبد الباسط عبد الصمد',
-    style: 'مرتل بالرواية المعتمدة',
+    name: 'عبد الباسط عبد الصمد (مرتل)',
+    style: 'صوت مكة وترتيل هادئ',
     cdnPrefix: 'https://everyayah.com/data/Abdul_Basit_Murattal_192kbps/'
+  },
+  {
+    id: 'abdulbasit_mujawwad',
+    name: 'عبد الباسط عبد الصمد (مجود)',
+    style: 'التلاوة المجودة الشهيرة',
+    cdnPrefix: 'https://everyayah.com/data/Abdul_Basit_Mujawwad_128kbps/'
+  },
+  {
+    id: 'hudhaify',
+    name: 'علي بن عبد الرحمن الحذيفي',
+    style: 'إمام وخطيب المسجد النبوي الشريف',
+    cdnPrefix: 'https://everyayah.com/data/Hudhaify_128kbps/'
+  },
+  {
+    id: 'maher',
+    name: 'ماهر المعيقلي',
+    style: 'إمام وخطيب المسجد الحرام',
+    cdnPrefix: 'https://everyayah.com/data/MaherAlMuaiqly128kbps/'
+  },
+  {
+    id: 'sudais',
+    name: 'عبد الرحمن السديس',
+    style: 'إمام وخطيب المسجد الحرام',
+    cdnPrefix: 'https://everyayah.com/data/Abdurrahmaan_As-Sudais_192kbps/'
+  },
+  {
+    id: 'shuraym',
+    name: 'سعود الشريم',
+    style: 'إمام المسجد الحرام الأسبق',
+    cdnPrefix: 'https://everyayah.com/data/Saood_ash-Shuraym_128kbps/'
+  },
+  {
+    id: 'dussary',
+    name: 'ياسر الدوسري',
+    style: 'إمام وخطيب المسجد الحرام',
+    cdnPrefix: 'https://everyayah.com/data/Yasser_Ad-Dussary_128kbps/'
+  },
+  {
+    id: 'ayyoub',
+    name: 'محمد أيوب',
+    style: 'إمام المسجد النبوي الشريف (المقام الحجازي)',
+    cdnPrefix: 'https://everyayah.com/data/Muhammad_Ayyoub_128kbps/'
+  },
+  {
+    id: 'jaber',
+    name: 'علي عبد الله جابر',
+    style: 'إمام المسجد الحرام الأسبق رحمه الله',
+    cdnPrefix: 'https://everyayah.com/data/Ali_Jaber_64kbps/'
   },
   {
     id: 'ghamadi',
     name: 'سعد الغامدي',
     style: 'تلاوة ندية خاشعة',
     cdnPrefix: 'https://everyayah.com/data/Ghamadi_40kbps/'
+  },
+  {
+    id: 'ajamy',
+    name: 'أحمد بن علي العجمي',
+    style: 'تلاوة شجية مؤثرة',
+    cdnPrefix: 'https://everyayah.com/data/Ahmed_ibn_Ali_al-Ajamy_128kbps_ketaballah.net/'
+  },
+  {
+    id: 'shaatree',
+    name: 'أبو بكر الشاطري',
+    style: 'ترتيل هادئ متقن',
+    cdnPrefix: 'https://everyayah.com/data/Abu_Bakr_Ash-Shaatree_128kbps/'
+  },
+  {
+    id: 'qatami',
+    name: 'ناصر القطامي',
+    style: 'تلاوة نجدية حزينة خاشعة',
+    cdnPrefix: 'https://everyayah.com/data/Nasser_Alqatami_128kbps/'
+  },
+  {
+    id: 'abbad',
+    name: 'فارس عباد',
+    style: 'نبرة يمنية ندية',
+    cdnPrefix: 'https://everyayah.com/data/Fares_Abbad_64kbps/'
+  },
+  {
+    id: 'budair',
+    name: 'صلاح البدير',
+    style: 'إمام وخطيب المسجد النبوي الشريف',
+    cdnPrefix: 'https://everyayah.com/data/Salah_Al_Budair_128kbps/'
   }
 ];
 
@@ -42,10 +143,15 @@ const surahCache = new Map<string, Ayah[]>();
 const pageCache = new Map<number, Ayah[]>();
 const tafsirTextCache = new Map<string, Record<number, string>>();
 
-// Seed cache with embedded surahs
-Object.entries(EMBEDDED_SURAHS).forEach(([sNum, ayahs]) => {
-  surahCache.set(`${sNum}-ar.muyassar-`, ayahs);
-});
+// Seed Al-Fatihah (7 verses) and complete short surahs
+if (EMBEDDED_SURAHS[1]) surahCache.set('1-ar.muyassar-', EMBEDDED_SURAHS[1]);
+if (EMBEDDED_SURAHS[112]) surahCache.set('112-ar.muyassar-', EMBEDDED_SURAHS[112]);
+if (EMBEDDED_SURAHS[113]) surahCache.set('113-ar.muyassar-', EMBEDDED_SURAHS[113]);
+if (EMBEDDED_SURAHS[114]) surahCache.set('114-ar.muyassar-', EMBEDDED_SURAHS[114]);
+if (EMBEDDED_SURAHS[108]) surahCache.set('108-ar.muyassar-', EMBEDDED_SURAHS[108]);
+
+// Seed FULL Surah Al-Baqarah (286 complete verses)
+surahCache.set('2-ar.muyassar-', BAQARAH_FULL_AYAHS);
 
 /**
  * Fetch surah verses with Tanzil Uthmanic text, designated tafsir, and optional language translation
@@ -60,6 +166,25 @@ export async function fetchSurahVerses(
     return surahCache.get(cacheKey)!;
   }
 
+  // Surah Al-Baqarah (286 complete verses) instant local return for default tafsir
+  if (surahNumber === 2 && tafsirEdition === 'ar.muyassar' && !translationEdition) {
+    surahCache.set(cacheKey, BAQARAH_FULL_AYAHS);
+    return BAQARAH_FULL_AYAHS;
+  }
+
+  // Check persistent localStorage cache
+  try {
+    const localSaved = localStorage.getItem(`quran_surah_${surahNumber}_${tafsirEdition}_${translationEdition || ''}`);
+    if (localSaved) {
+      const parsed = JSON.parse(localSaved);
+      const meta = getSurahMeta(surahNumber);
+      if (meta && parsed.length >= meta.numberOfAyahs) {
+        surahCache.set(cacheKey, parsed);
+        return parsed;
+      }
+    }
+  } catch {}
+
   const meta = getSurahMeta(surahNumber);
   if (!meta) return [];
 
@@ -71,7 +196,7 @@ export async function fetchSurahVerses(
 
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 6500);
+    const timeoutId = setTimeout(() => controller.abort(), 12000);
     const res = await fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/editions/${editions.join(',')}`, {
       signal: controller.signal
     });
@@ -104,8 +229,11 @@ export async function fetchSurahVerses(
         };
       });
 
-      if (ayahs.length > 0) {
+      if (ayahs.length >= meta.numberOfAyahs) {
         surahCache.set(cacheKey, ayahs);
+        try {
+          localStorage.setItem(`quran_surah_${surahNumber}_${tafsirEdition}_${translationEdition || ''}`, JSON.stringify(ayahs));
+        } catch {}
         return ayahs;
       }
     }
@@ -113,14 +241,20 @@ export async function fetchSurahVerses(
     console.warn('Network fetch error for Surah, falling back to local fallback data:', err);
   }
 
-  // Fallback: check if we have base embedded surah
+  // If Surah Al-Baqarah, always return the complete 286 verses
+  if (surahNumber === 2) {
+    surahCache.set(cacheKey, BAQARAH_FULL_AYAHS);
+    return BAQARAH_FULL_AYAHS;
+  }
+
+  // Fallback: check if we have complete base embedded surah
   const baseEmbedded = EMBEDDED_SURAHS[surahNumber];
-  if (baseEmbedded) {
+  if (baseEmbedded && baseEmbedded.length >= meta.numberOfAyahs) {
     surahCache.set(cacheKey, baseEmbedded);
     return baseEmbedded;
   }
 
-  // General Fallback
+  // General Fallback with full number of ayahs
   const fallbackAyahs: Ayah[] = Array.from({ length: meta.numberOfAyahs }, (_, i) => {
     const num = i + 1;
     return {
@@ -151,7 +285,7 @@ export async function fetchSpecificTafsir(surahNumber: number, tafsirEdition: st
 
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 6500);
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
     const res = await fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/${tafsirEdition}`, {
       signal: controller.signal
     });
@@ -169,6 +303,16 @@ export async function fetchSpecificTafsir(surahNumber: number, tafsirEdition: st
     }
   } catch (e) {
     console.warn(`Could not fetch tafsir ${tafsirEdition} for surah ${surahNumber}:`, e);
+  }
+
+  // If Al-Baqarah and default muyassar, populate from BAQARAH_FULL_AYAHS
+  if (surahNumber === 2 && tafsirEdition === 'ar.muyassar') {
+    const map: Record<number, string> = {};
+    BAQARAH_FULL_AYAHS.forEach(a => {
+      map[a.numberInSurah] = a.tafsir || '';
+    });
+    tafsirTextCache.set(cacheKey, map);
+    return map;
   }
 
   return {};
@@ -199,9 +343,18 @@ export async function fetchPageVerses(pageNumber: number): Promise<{ surahMeta: 
     return { surahMeta, ayahs: p604Ayahs };
   }
 
+  // Check if page belongs to Surah Al-Baqarah (pages 2 to 49)
+  if (pageNumber >= 2 && pageNumber <= 49) {
+    const baqarahPageAyahs = BAQARAH_FULL_AYAHS.filter(a => a.page === pageNumber);
+    if (baqarahPageAyahs.length > 0) {
+      pageCache.set(pageNumber, baqarahPageAyahs);
+      return { surahMeta, ayahs: baqarahPageAyahs };
+    }
+  }
+
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 6500);
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
     const res = await fetch(`https://api.alquran.cloud/v1/page/${pageNumber}/quran-uthmani`, {
       signal: controller.signal
     });

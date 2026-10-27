@@ -113,19 +113,22 @@ export const AudioPlayerBar: React.FC<AudioPlayerBarProps> = ({
                   الآية {currentAyah.numberInSurah}
                 </span>
               </div>
-              <div className="text-[11px] text-stone-600 dark:text-stone-300 flex items-center gap-1.5">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-1 text-[11px] text-stone-600 dark:text-stone-300">
                 <select
                   value={selectedReciterId}
                   onChange={(e) => onSelectReciter(e.target.value)}
-                  className="bg-transparent text-[11px] font-medium text-stone-700 dark:text-stone-200 focus:outline-hidden cursor-pointer"
+                  className="bg-stone-100 dark:bg-[#15201C] border border-stone-200 dark:border-stone-700 rounded px-2 py-0.5 text-[11px] font-semibold text-emerald-900 dark:text-emerald-300 focus:outline-hidden cursor-pointer max-w-[210px] sm:max-w-[240px] truncate"
                   aria-label="اختيار القارئ"
                 >
                   {RECITERS.map((r) => (
-                    <option key={r.id} value={r.id} className="dark:bg-[#121A17]">
-                      القارئ: {r.name}
+                    <option key={r.id} value={r.id} className="dark:bg-[#121A17] text-stone-900 dark:text-stone-100">
+                      القارئ: {r.name} ({r.style})
                     </option>
                   ))}
                 </select>
+                <span className="hidden md:inline text-[10px] text-stone-400 dark:text-stone-500 truncate">
+                  · {currentReciter.style}
+                </span>
               </div>
             </div>
           </div>
