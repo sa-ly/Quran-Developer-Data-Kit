@@ -101,7 +101,7 @@ export const SUPPORTED_LANGUAGES: LanguageConfig[] = [
 export const UI_TRANSLATIONS: Record<string, Record<string, string>> = {
   ar: {
     appTitle: 'المصحف الشريف',
-    appSubtitle: 'بالرسم العثماني المعتمد والتجويد الملون',
+    appSubtitle: 'رواية حفص عن عاصم من طريق الشاطبية',
     surahView: 'عرض السور والآيات',
     mushafView: 'مصحف المدينة (604 صفحة)',
     indexView: 'فهرس السور الـ 114',
@@ -159,7 +159,7 @@ export const UI_TRANSLATIONS: Record<string, Record<string, string>> = {
   },
   en: {
     appTitle: 'Noble Quran Kareem',
-    appSubtitle: 'Uthmani Script & Color-Coded Tajweed',
+    appSubtitle: 'Hafs from Asim · Shatibiyyah Way',
     surahView: 'Surah Reader',
     mushafView: 'Madinah Mushaf (604 Pages)',
     indexView: '114 Surahs Index',

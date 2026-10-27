@@ -127,9 +127,14 @@ export const MushafPageView: React.FC<MushafPageViewProps> = ({
         <div className="flex flex-wrap items-center justify-between gap-2 p-2.5 px-3.5 bg-amber-50/80 dark:bg-[#131C1A] rounded-xl border border-amber-200/90 dark:border-stone-800 text-xs shadow-2xs">
           <div className="flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
-            <span className="font-bold text-stone-900 dark:text-amber-100 font-serif">
-              {getUIText(currentLanguage, 'tajweedKey')}
-            </span>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-2">
+              <span className="font-bold text-stone-900 dark:text-amber-100 font-serif">
+                {getUIText(currentLanguage, 'tajweedKey')}
+              </span>
+              <span className="text-[10px] text-emerald-800 dark:text-emerald-300 font-semibold">
+                (رواية حفص عن عاصم · طريق الشاطبية)
+              </span>
+            </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-[11px]">
@@ -270,8 +275,8 @@ export const MushafPageView: React.FC<MushafPageViewProps> = ({
             {currentPage}
           </div>
 
-          <div className="text-[11px] text-stone-400 dark:text-stone-500 font-medium">
-            {getUIText(currentLanguage, 'madinahMushaf')}
+          <div className="text-[11px] text-stone-500 dark:text-stone-400 font-medium font-serif">
+            {getUIText(currentLanguage, 'madinahMushaf')} · رواية حفص عن عاصم
           </div>
         </div>
       </div>

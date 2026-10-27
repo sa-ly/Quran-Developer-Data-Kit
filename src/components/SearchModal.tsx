@@ -4,6 +4,7 @@ import { normalizeArabic, highlightMatches } from '../utils/quranSearch';
 import { EMBEDDED_SURAHS } from '../data/sampleVerses';
 import { getSurahMeta, SURAH_LIST } from '../data/surahList';
 import { Ayah } from '../types/quran';
+import { getLocalSemanticSearch } from '../utils/localTadabburEngine';
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -77,38 +78,34 @@ export const SearchModal: React.FC<SearchModalProps> = ({
     setSemanticLoading(true);
     setSemanticResults(null);
 
+    // Instant local thematic search
+    const localResult = getLocalSemanticSearch(query);
+
     try {
-      const res = await fetch('/api/tadabbur', {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 2000);
+      const res = await fetch('/api/gemini/semantic-search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          verseText: query,
-          surahName: 'بحث موضوعي دلالي',
-          ayahNumber: 1,
-          mode: 'semantic_search',
-        }),
+        body: JSON.stringify({ query }),
+        signal: controller.signal,
       });
+      clearTimeout(timeoutId);
 
       if (res.ok) {
         const data = await res.json();
-        setSemanticResults({
-          summary: data.reflection,
-          relatedThemes: data.themes,
-          recommendedSurahs: data.practicalTakeaways,
-        });
-      } else {
-        setSemanticResults({
-          summary: `الموضوع المبحوث عنه: "${query}". يوجهنا القرآن الكريم إلى التأمل في دلائل عظمة الله ورحمته والإحسان إلى خلقه والتزام العدل والصدق.`,
-          relatedThemes: ['الإيمان واليقين', 'العمل الصالح', 'الأخلاق الفاضلة'],
-          recommendedSurahs: ['سورة البقرة', 'سورة الإسراء', 'سورة النحل'],
-        });
+        if (data && data.summary) {
+          setSemanticResults({
+            summary: data.summary,
+            relatedThemes: data.relatedThemes,
+            recommendedSurahs: data.recommendedSurahs,
+          });
+          return;
+        }
       }
+      setSemanticResults(localResult);
     } catch {
-      setSemanticResults({
-        summary: `الموضوع المبحوث عنه: "${query}". يوجهنا القرآن الكريم إلى التأمل في دلائل عظمة الله ورحمته والإحسان إلى خلقه.`,
-        relatedThemes: ['الإيمان واليقين', 'العمل الصالح', 'الأخلاق الفاضلة'],
-        recommendedSurahs: ['سورة البقرة', 'سورة الإسراء', 'سورة النحل'],
-      });
+      setSemanticResults(localResult);
     } finally {
       setSemanticLoading(false);
     }

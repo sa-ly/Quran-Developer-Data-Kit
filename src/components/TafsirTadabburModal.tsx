@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Sparkles, BookOpen, Copy, Check, Play, Loader2, Lightbulb, Compass, Share2 } from 'lucide-react';
 import { Ayah } from '../types/quran';
+import { getLocalTadabbur } from '../utils/localTadabburEngine';
 
 interface TafsirTadabburModalProps {
   isOpen: boolean;
@@ -31,9 +32,12 @@ export const TafsirTadabburModal: React.FC<TafsirTadabburModalProps> = ({
 
   const handleFetchAiTadabbur = async () => {
     setLoadingAi(true);
+    // Instant authentic local calculation
+    const localResult = getLocalTadabbur(surahName, ayah.numberInSurah, ayah.text, ayah.tafsir);
+
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 6000);
+      const timeoutId = setTimeout(() => controller.abort(), 2000);
       const res = await fetch('/api/gemini/tadabbur', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -54,29 +58,10 @@ export const TafsirTadabburModal: React.FC<TafsirTadabburModalProps> = ({
           return;
         }
       }
-
-      // Graceful rich fallback
-      setAiTadabbur({
-        tadabbur: `تأمل في قوله تعالى: "${ayah.text}". تفيض هذه الآية العظيمة من سورة ${surahName} بأنوار التوحيد والهداية، وتبين للمؤمن سبيل الاستقامة والاعتصام برحمة الله وفضله في كل حال، وتستحث الفؤاد على تدبر عظمة الخالق سبحانه وحكمته البالغة.${ayah.tafsir ? ` ومما يزيدها جلاءً ما قرره المفسرون: ${ayah.tafsir}` : ''}`,
-        keyTakeaway: 'الاعتصام بكتاب الله واستشعار معيته ولطفه في السر والعلن.',
-        practicalSteps: [
-          'ترديد الآية الكريمة بتدبر وخشوع في الصلوات وأوراد اليوم والليلة.',
-          'تطبيق ما دلت عليه من مقتضيات الإيمان والأخلاق الفاضلة في التعامل مع الخلق.',
-          'مذاكرة معاني الآية وهداياتها مع الأهل وتثبيتها بالعمل الصالح والتسبيح.'
-        ],
-        linguisticGems: 'فصاحة النظم القرآني وإيجازه المعجز الذي يجمع المعاني الغزيرة بأوجز وأبدع عبارة.'
-      });
+      setAiTadabbur(localResult);
     } catch {
-      setAiTadabbur({
-        tadabbur: `تأمل في قوله تعالى: "${ayah.text}". تفيض هذه الآية العظيمة من سورة ${surahName} بأنوار التوحيد والهداية، وتبين للمؤمن سبيل الاستقامة والاعتصام برحمة الله وفضله في كل حال، وتستحث الفؤاد على تدبر عظمة الخالق سبحانه وحكمته البالغة.${ayah.tafsir ? ` ومما يزيدها جلاءً ما قرره المفسرون: ${ayah.tafsir}` : ''}`,
-        keyTakeaway: 'الاعتصام بكتاب الله واستشعار معيته ولطفه في السر والعلن.',
-        practicalSteps: [
-          'ترديد الآية الكريمة بتدبر وخشوع في الصلوات وأوراد اليوم والليلة.',
-          'تطبيق ما دلت عليه من مقتضيات الإيمان والأخلاق الفاضلة في التعامل مع الخلق.',
-          'مذاكرة معاني الآية وهداياتها مع الأهل وتثبيتها بالعمل الصالح والتسبيح.'
-        ],
-        linguisticGems: 'فصاحة النظم القرآني وإيجازه المعجز الذي يجمع المعاني الغزيرة بأوجز وأبدع عبارة.'
-      });
+      // Perfectly silent, rich local fallback on static hosts (Cloudflare Pages)
+      setAiTadabbur(localResult);
     } finally {
       setLoadingAi(false);
     }

@@ -39,7 +39,7 @@ export const Footer: React.FC<FooterProps> = ({
             <span aria-hidden="true">·</span>
             <span>الرسم العثماني المعتمد</span>
             <span aria-hidden="true">·</span>
-            <span>رواية حفص عن عاصم</span>
+            <span>رواية حفص عن عاصم (طريق الشاطبية)</span>
           </div>
 
           <div className="flex items-center gap-4">
