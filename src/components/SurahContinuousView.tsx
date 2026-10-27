@@ -201,13 +201,13 @@ export const SurahContinuousView: React.FC<SurahContinuousViewProps> = ({
       {/* Ornate Surah Marquee Banner */}
       <div className="relative p-6 sm:p-8 bg-[#FDFBF7] dark:bg-[#121A17] rounded-2xl border-2 border-[#C5A059]/40 dark:border-[#C5A059]/30 shadow-sm text-center islamic-border-frame overflow-hidden">
         <div className="space-y-2">
-          <div className="text-xs tracking-widest text-[#064E3B] dark:text-emerald-400 font-semibold font-cairo">
+          <div className="text-sm tracking-widest text-[#064E3B] dark:text-emerald-400 font-bold font-serif">
             سُورَةُ {surah.name}
           </div>
-          <h1 className="text-3xl sm:text-4xl font-cairo font-bold text-stone-900 dark:text-amber-100 tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-serif font-bold text-stone-900 dark:text-amber-100 tracking-tight">
             سُورَةُ {surah.name}
           </h1>
-          <div className="text-xs text-stone-600 dark:text-stone-400 flex items-center justify-center gap-2 pt-1 font-cairo">
+          <div className="text-xs sm:text-sm text-stone-600 dark:text-stone-400 flex items-center justify-center gap-2 pt-1 font-serif">
             <span>{surah.revelationType === 'Meccan' ? getUIText(currentLanguage, 'meccan') : getUIText(currentLanguage, 'medinan')}</span>
             <span aria-hidden="true">·</span>
             <span>{surah.numberOfAyahs} {getUIText(currentLanguage, 'ayahsCount')}</span>

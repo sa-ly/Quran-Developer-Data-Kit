@@ -14,6 +14,7 @@ import { TafsirLibraryModal } from './components/TafsirLibraryModal';
 import { LanguageSelectorModal } from './components/LanguageSelectorModal';
 import { TajweedGuideModal } from './components/TajweedGuideModal';
 import { LicensesAttributionModal } from './components/LicensesAttributionModal';
+import { SettingsModal } from './components/SettingsModal';
 import { SearchModal } from './components/SearchModal';
 import { BookmarksDrawer } from './components/BookmarksDrawer';
 import { Footer } from './components/Footer';
@@ -77,10 +78,15 @@ export default function App() {
   const [tafsirLibraryOpen, setTafsirLibraryOpen] = useState<boolean>(false);
   const [languageModalOpen, setLanguageModalOpen] = useState<boolean>(false);
   const [selectedAyahForTafsir, setSelectedAyahForTafsir] = useState<Ayah | null>(null);
-  const [tajweedGuideOpen, setTajweedGuideOpen] = useState<boolean>(false);
-  const [licensesModalOpen, setLicensesModalOpen] = useState<boolean>(false);
   const [searchModalOpen, setSearchModalOpen] = useState<boolean>(false);
   const [bookmarksDrawerOpen, setBookmarksDrawerOpen] = useState<boolean>(false);
+  const [settingsModalOpen, setSettingsModalOpen] = useState<boolean>(false);
+  const [settingsTab, setSettingsTab] = useState<'tajweed' | 'licenses' | 'preferences' | 'about'>('tajweed');
+
+  const handleOpenSettings = (tab: 'tajweed' | 'licenses' | 'preferences' | 'about' = 'tajweed') => {
+    setSettingsTab(tab);
+    setSettingsModalOpen(true);
+  };
 
   // Preferences & Bookmarks
   const [tajweedEnabled, setTajweedEnabled] = useState<boolean>(true);
@@ -292,17 +298,15 @@ export default function App() {
         setActiveView={setActiveView}
         openSearch={() => setSearchModalOpen(true)}
         openBookmarks={() => setBookmarksDrawerOpen(true)}
-        openTajweedGuide={() => setTajweedGuideOpen(true)}
+        openSettings={handleOpenSettings}
         openTafsirLibrary={() => setTafsirLibraryOpen(true)}
         openLanguageModal={() => setLanguageModalOpen(true)}
-        openLicenses={() => setLicensesModalOpen(true)}
         tajweedEnabled={tajweedEnabled}
         setTajweedEnabled={setTajweedEnabled}
         bookmarkCount={bookmarks.length}
         darkMode={darkMode}
         setDarkMode={setDarkMode}
         currentLanguage={currentLanguage}
-        activeTafsirName={activeTafsir.name}
       />
 
       {/* Main Content Area */}
@@ -325,7 +329,7 @@ export default function App() {
             selectedFont={selectedFont}
             setSelectedFont={setSelectedFont}
             isDark={darkMode}
-            onOpenTajweedGuide={() => setTajweedGuideOpen(true)}
+            onOpenTajweedGuide={() => handleOpenSettings('tajweed')}
             currentLanguage={currentLanguage}
           />
         )}
@@ -351,7 +355,7 @@ export default function App() {
             playingAyahNumber={playingAyah?.numberInSurah ?? null}
             isPlaying={isPlaying}
             isDark={darkMode}
-            onOpenTajweedGuide={() => setTajweedGuideOpen(true)}
+            onOpenTajweedGuide={() => handleOpenSettings('tajweed')}
             currentLanguage={currentLanguage}
           />
         )}
@@ -426,16 +430,16 @@ export default function App() {
         }}
       />
 
-      {/* Tajweed Color Guide Modal */}
-      <TajweedGuideModal
-        isOpen={tajweedGuideOpen}
-        onClose={() => setTajweedGuideOpen(false)}
-      />
-
-      {/* Licenses and Legal Attribution Modal */}
-      <LicensesAttributionModal
-        isOpen={licensesModalOpen}
-        onClose={() => setLicensesModalOpen(false)}
+      {/* Unified Settings & Technical Hub (Gear Modal) */}
+      <SettingsModal
+        isOpen={settingsModalOpen}
+        onClose={() => setSettingsModalOpen(false)}
+        initialTab={settingsTab}
+        tajweedEnabled={tajweedEnabled}
+        setTajweedEnabled={setTajweedEnabled}
+        darkMode={darkMode}
+        setDarkMode={setDarkMode}
+        currentLanguage={currentLanguage}
       />
 
       {/* Quran Search Modal (Text & AI Semantic) */}
@@ -456,8 +460,8 @@ export default function App() {
 
       {/* Footer with Mandatory Legal Attribution */}
       <Footer
-        onOpenLicenses={() => setLicensesModalOpen(true)}
-        onOpenTajweedGuide={() => setTajweedGuideOpen(true)}
+        onOpenLicenses={() => handleOpenSettings('licenses')}
+        onOpenTajweedGuide={() => handleOpenSettings('tajweed')}
       />
     </div>
   );

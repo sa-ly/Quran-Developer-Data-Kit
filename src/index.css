@@ -5,13 +5,15 @@
 @layer base {
   :root {
     --font-quran: 'Amiri Quran', 'Scheherazade New', 'Amiri', 'Traditional Arabic', 'Noto Naskh Arabic', serif;
-    --font-arabic: 'Cairo', 'Segoe UI', Tahoma, Arial, sans-serif;
+    --font-amiri: 'Amiri', 'Scheherazade New', 'Amiri Quran', 'Traditional Arabic', serif;
   }
 
   body {
-    font-family: 'Cairo', 'Segoe UI', Tahoma, Arial, sans-serif;
+    font-family: 'Amiri', 'Scheherazade New', 'Amiri Quran', 'Traditional Arabic', serif;
     background-color: #FAF8F5;
     color: #1C1917;
+    font-size: 1.05rem;
+    line-height: 1.7;
     transition: background-color 0.25s ease, color 0.25s ease;
   }
 
@@ -19,15 +21,19 @@
     background-color: #0c1311;
     color: #F5F5F4;
   }
+
+  h1, h2, h3, h4, button, select, input, nav {
+    font-family: 'Amiri', 'Scheherazade New', 'Amiri Quran', 'Traditional Arabic', serif;
+  }
 }
 
 /* Ensure font-serif and font-sans have robust Arabic fallbacks */
 .font-serif {
-  font-family: 'Amiri', 'Scheherazade New', 'Cairo', 'Traditional Arabic', serif !important;
+  font-family: 'Amiri', 'Scheherazade New', 'Amiri Quran', 'Traditional Arabic', serif !important;
 }
 
 .font-sans {
-  font-family: 'Cairo', 'Segoe UI', Tahoma, Arial, sans-serif !important;
+  font-family: 'Amiri', 'Cairo', 'Segoe UI', Tahoma, Arial, sans-serif !important;
 }
 
 .font-quran {

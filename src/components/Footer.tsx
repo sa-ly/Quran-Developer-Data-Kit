@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShieldCheck, Heart } from 'lucide-react';
+import { ShieldCheck, Settings } from 'lucide-react';
 
 interface FooterProps {
   onOpenLicenses: () => void;
@@ -11,11 +11,11 @@ export const Footer: React.FC<FooterProps> = ({
   onOpenTajweedGuide,
 }) => {
   return (
-    <footer className="border-t border-stone-200 dark:border-stone-800 bg-[#FAF8F5] dark:bg-[#0c1311] py-8 text-stone-600 dark:text-stone-400 text-xs transition-colors">
+    <footer className="border-t border-stone-200 dark:border-stone-800 bg-[#FAF8F5] dark:bg-[#0c1311] py-8 text-stone-600 dark:text-stone-400 text-sm transition-colors font-amiri">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-5">
         {/* Prominent Legal Attribution statement */}
         <div className="p-4 bg-[#F5F1E8]/80 dark:bg-[#141E1B] rounded-xl border border-[#C5A059]/30 dark:border-stone-800 text-center max-w-3xl mx-auto space-y-2">
-          <div className="flex items-center justify-center gap-1.5 font-bold text-stone-900 dark:text-stone-100 font-serif text-sm">
+          <div className="flex items-center justify-center gap-1.5 font-bold text-stone-900 dark:text-stone-100 font-serif text-base">
             <ShieldCheck className="w-4 h-4 text-[#064E3B] dark:text-emerald-400" />
             <span>بيان الإسناد والامتثال القانوني للتراخيص</span>
           </div>
@@ -25,7 +25,7 @@ export const Footer: React.FC<FooterProps> = ({
           <div className="pt-1">
             <button
               onClick={onOpenLicenses}
-              className="text-xs font-semibold text-[#064E3B] dark:text-emerald-400 hover:underline"
+              className="text-xs font-semibold text-[#064E3B] dark:text-emerald-400 hover:underline cursor-pointer"
             >
               عرض تفاصيل التراخيص والمصادر الكاملة ←
             </button>
@@ -33,25 +33,25 @@ export const Footer: React.FC<FooterProps> = ({
         </div>
 
         {/* Clean Secondary Links & Editorial Notes */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-stone-200/60 dark:border-stone-800 text-stone-500 dark:text-stone-400 text-[11px]">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-stone-200/60 dark:border-stone-800 text-stone-500 dark:text-stone-400 text-xs font-serif">
           <div className="flex items-center gap-2">
-            <span>المصحف الشريف الرقمي</span>
+            <span className="font-bold text-stone-700 dark:text-stone-300">المصحف الشريف الرقمي</span>
             <span aria-hidden="true">·</span>
             <span>الرسم العثماني المعتمد</span>
             <span aria-hidden="true">·</span>
-            <span>رواية حفص عن عاصم (طريق الشاطبية)</span>
+            <span className="text-emerald-800 dark:text-emerald-400">رواية حفص عن عاصم (طريق الشاطبية)</span>
           </div>
 
           <div className="flex items-center gap-4">
             <button
               onClick={onOpenTajweedGuide}
-              className="hover:text-stone-900 dark:hover:text-stone-100 transition-colors"
+              className="hover:text-stone-900 dark:hover:text-stone-100 transition-colors cursor-pointer"
             >
               دليل أحكام التجويد
             </button>
             <button
               onClick={onOpenLicenses}
-              className="hover:text-stone-900 dark:hover:text-stone-100 transition-colors"
+              className="hover:text-stone-900 dark:hover:text-stone-100 transition-colors cursor-pointer"
             >
               التراخيص المفتوحة
             </button>

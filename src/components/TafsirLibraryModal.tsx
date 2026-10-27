@@ -271,7 +271,7 @@ export const TafsirLibraryModal: React.FC<TafsirLibraryModalProps> = ({
                       {a.text}
                     </p>
 
-                    <div className="text-xs text-stone-700 dark:text-stone-300 leading-relaxed pt-1 font-cairo bg-white dark:bg-[#101715] p-2.5 rounded-lg border border-stone-200/70 dark:border-stone-800">
+                    <div className="text-xs sm:text-sm text-stone-700 dark:text-stone-300 leading-relaxed pt-1 font-serif bg-white dark:bg-[#101715] p-2.5 rounded-lg border border-stone-200/70 dark:border-stone-800">
                       {a.tafsir || 'جاري توفير نص التفسير...'}
                     </div>
                   </div>
