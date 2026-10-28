@@ -4,10 +4,13 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Navbar } from './components/Navbar';
+import { Navbar, PortalSection } from './components/Navbar';
 import { SurahContinuousView } from './components/SurahContinuousView';
 import { MushafPageView } from './components/MushafPageView';
 import { SurahIndexView } from './components/SurahIndexView';
+import { HajjGuideSection } from './components/HajjGuideSection';
+import { DuaaSection } from './components/DuaaSection';
+import { HadithSection } from './components/HadithSection';
 import { AudioPlayerBar } from './components/AudioPlayerBar';
 import { TafsirTadabburModal } from './components/TafsirTadabburModal';
 import { TafsirLibraryModal } from './components/TafsirLibraryModal';
@@ -27,6 +30,7 @@ import { SUPPORTED_LANGUAGES, LanguageConfig } from './utils/i18n';
 
 export default function App() {
   // Navigation & View State
+  const [portalSection, setPortalSection] = useState<PortalSection>('quran');
   const [activeView, setActiveView] = useState<'reader' | 'pages' | 'index'>('reader');
   const [currentSurahNumber, setCurrentSurahNumber] = useState<number>(1);
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
@@ -293,7 +297,10 @@ export default function App() {
   return (
     <div className="min-h-screen flex flex-col bg-[#FAF8F5] dark:bg-[#0c1311] text-stone-900 dark:text-stone-100 selection:bg-[#C5A059]/25 w-full max-w-full overflow-x-hidden transition-colors">
       {/* Universal Top Bar with Globe, Tafsir, Dark Mode, Tajweed */}
+      {/* Universal Top Bar with hajj.ly branding, portal sections, and settings */}
       <Navbar
+        portalSection={portalSection}
+        setPortalSection={setPortalSection}
         activeView={activeView}
         setActiveView={setActiveView}
         openSearch={() => setSearchModalOpen(true)}
@@ -309,66 +316,82 @@ export default function App() {
         currentLanguage={currentLanguage}
       />
 
-      {/* Main Content Area */}
+      {/* Main Content Area: hajj.ly Portal Sections */}
       <main className="flex-1 w-full">
-        {activeView === 'reader' && (
-          <SurahContinuousView
-            surah={currentSurahMeta}
-            ayahs={surahAyahs}
-            loading={loadingSurah}
-            onSelectSurah={handleSelectSurah}
-            playingAyahNumber={playingAyah?.numberInSurah ?? null}
-            isPlaying={isPlaying}
-            onPlayAyah={handlePlayAyah}
-            onOpenTafsir={handleOpenTafsir}
-            onToggleBookmark={handleToggleBookmark}
-            isBookmarked={isBookmarked}
-            tajweedEnabled={tajweedEnabled}
-            fontSize={fontSize}
-            setFontSize={setFontSize}
-            selectedFont={selectedFont}
-            setSelectedFont={setSelectedFont}
-            isDark={darkMode}
-            onOpenTajweedGuide={() => handleOpenSettings('tajweed')}
-            currentLanguage={currentLanguage}
-          />
+        {portalSection === 'hajj' && (
+          <HajjGuideSection onGoToQuran={() => setPortalSection('quran')} />
         )}
 
-        {activeView === 'pages' && (
-          <MushafPageView
-            currentPage={currentPageNumber}
-            onPageChange={(page) => {
-              setCurrentPageNumber(page);
-              const foundSurah = getSurahByPage(page);
-              if (foundSurah && foundSurah.number !== currentSurahNumber) {
-                setCurrentSurahNumber(foundSurah.number);
-              }
-            }}
-            pageVerses={pageAyahs}
-            loading={loadingPage}
-            surahMeta={getSurahByPage(currentPageNumber)}
-            tajweedEnabled={tajweedEnabled}
-            onPlayAyah={handlePlayAyah}
-            onOpenTafsir={handleOpenTafsir}
-            onToggleBookmark={handleToggleBookmark}
-            isBookmarked={isBookmarked}
-            playingAyahNumber={playingAyah?.numberInSurah ?? null}
-            isPlaying={isPlaying}
-            isDark={darkMode}
-            onOpenTajweedGuide={() => handleOpenSettings('tajweed')}
-            currentLanguage={currentLanguage}
-          />
+        {portalSection === 'duaa' && (
+          <DuaaSection onGoToQuran={() => setPortalSection('quran')} />
         )}
 
-        {activeView === 'index' && (
-          <SurahIndexView
-            onSelectSurah={handleSelectSurah}
-            onSelectPage={(page) => {
-              setCurrentPageNumber(page);
-              setActiveView('pages');
-            }}
-            currentLanguage={currentLanguage}
-          />
+        {portalSection === 'hadith' && (
+          <HadithSection onGoToQuran={() => setPortalSection('quran')} />
+        )}
+
+        {portalSection === 'quran' && (
+          <>
+            {activeView === 'reader' && (
+              <SurahContinuousView
+                surah={currentSurahMeta}
+                ayahs={surahAyahs}
+                loading={loadingSurah}
+                onSelectSurah={handleSelectSurah}
+                playingAyahNumber={playingAyah?.numberInSurah ?? null}
+                isPlaying={isPlaying}
+                onPlayAyah={handlePlayAyah}
+                onOpenTafsir={handleOpenTafsir}
+                onToggleBookmark={handleToggleBookmark}
+                isBookmarked={isBookmarked}
+                tajweedEnabled={tajweedEnabled}
+                fontSize={fontSize}
+                setFontSize={setFontSize}
+                selectedFont={selectedFont}
+                setSelectedFont={setSelectedFont}
+                isDark={darkMode}
+                onOpenTajweedGuide={() => handleOpenSettings('tajweed')}
+                currentLanguage={currentLanguage}
+              />
+            )}
+
+            {activeView === 'pages' && (
+              <MushafPageView
+                currentPage={currentPageNumber}
+                onPageChange={(page) => {
+                  setCurrentPageNumber(page);
+                  const foundSurah = getSurahByPage(page);
+                  if (foundSurah && foundSurah.number !== currentSurahNumber) {
+                    setCurrentSurahNumber(foundSurah.number);
+                  }
+                }}
+                pageVerses={pageAyahs}
+                loading={loadingPage}
+                surahMeta={getSurahByPage(currentPageNumber)}
+                tajweedEnabled={tajweedEnabled}
+                onPlayAyah={handlePlayAyah}
+                onOpenTafsir={handleOpenTafsir}
+                onToggleBookmark={handleToggleBookmark}
+                isBookmarked={isBookmarked}
+                playingAyahNumber={playingAyah?.numberInSurah ?? null}
+                isPlaying={isPlaying}
+                isDark={darkMode}
+                onOpenTajweedGuide={() => handleOpenSettings('tajweed')}
+                currentLanguage={currentLanguage}
+              />
+            )}
+
+            {activeView === 'index' && (
+              <SurahIndexView
+                onSelectSurah={handleSelectSurah}
+                onSelectPage={(page) => {
+                  setCurrentPageNumber(page);
+                  setActiveView('pages');
+                }}
+                currentLanguage={currentLanguage}
+              />
+            )}
+          </>
         )}
       </main>
 

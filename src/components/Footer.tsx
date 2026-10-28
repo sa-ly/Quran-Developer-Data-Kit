@@ -35,9 +35,9 @@ export const Footer: React.FC<FooterProps> = ({
         {/* Clean Secondary Links & Editorial Notes */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-stone-200/60 dark:border-stone-800 text-stone-500 dark:text-stone-400 text-xs font-serif">
           <div className="flex items-center gap-2">
-            <span className="font-bold text-stone-700 dark:text-stone-300">المصحف الشريف الرقمي</span>
+            <span className="font-bold text-[#064E3B] dark:text-emerald-400">hajj.ly (منصة حَجّ)</span>
             <span aria-hidden="true">·</span>
-            <span>الرسم العثماني المعتمد</span>
+            <span>القرآن الكريم بالرسم العثماني</span>
             <span aria-hidden="true">·</span>
             <span className="text-emerald-800 dark:text-emerald-400">رواية حفص عن عاصم (طريق الشاطبية)</span>
           </div>

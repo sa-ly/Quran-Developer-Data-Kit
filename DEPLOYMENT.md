@@ -65,7 +65,7 @@ git push origin main
 1. افتح مشروعك في Cloudflare Pages.
 2. اضغط على تبويب **Custom domains**.
 3. اضغط **Set up a custom domain**.
-4. اكتب اسم نطاقك (مثال: `quran.yourdomain.com` أو `yourdomain.com`).
+4. اكتب اسم نطاقك: `hajj.ly`.
 5. ستقوم Cloudflare بإعداد سجلات الـ DNS وإصدار شهادة SSL مشفرة تلقائياً ومجاناً.
 
 ---

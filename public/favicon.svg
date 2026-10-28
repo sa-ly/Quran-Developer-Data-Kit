@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient: Deep Sacred Emerald -->
+    <radialGradient id="bgGrad" cx="50%" cy="38%" r="65%">
+      <stop offset="0%" stop-color="#0a5c46" />
+      <stop offset="60%" stop-color="#064E3B" />
+      <stop offset="100%" stop-color="#02281e" />
+    </radialGradient>
+
+    <!-- Metallic Royal Gold Gradient -->
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FCE596" />
+      <stop offset="30%" stop-color="#E5C378" />
+      <stop offset="70%" stop-color="#C5A059" />
+      <stop offset="100%" stop-color="#8F6B28" />
+    </linearGradient>
+
+    <!-- Secondary Soft Gold Gradient -->
+    <linearGradient id="softGold" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#C5A059" />
+      <stop offset="50%" stop-color="#FDF3B8" />
+      <stop offset="100%" stop-color="#D4AF37" />
+    </linearGradient>
+
+    <!-- Subtle Glow Filter -->
+    <filter id="goldGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000000" flood-opacity="0.45" />
+    </filter>
+  </defs>
+
+  <!-- Base Rounded Container -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)" />
+
+  <!-- Outer Islamic 8-Pointed Star Decorative Inset -->
+  <g transform="translate(256, 256)" opacity="0.18">
+    <rect x="-210" y="-210" width="420" height="420" rx="40" fill="none" stroke="url(#softGold)" stroke-width="3" />
+    <rect x="-210" y="-210" width="420" height="420" rx="40" fill="none" stroke="url(#softGold)" stroke-width="3" transform="rotate(45)" />
+  </g>
+
+  <!-- Ornate Golden Border with Corner Details -->
+  <rect x="24" y="24" width="464" height="464" rx="92" fill="none" stroke="url(#goldGrad)" stroke-width="7" filter="url(#shadow)" />
+  <rect x="36" y="36" width="440" height="440" rx="80" fill="none" stroke="url(#softGold)" stroke-width="1.8" opacity="0.6" />
+
+  <!-- Corner Arabesque Florets -->
+  <g fill="url(#softGold)">
+    <circle cx="56" cy="56" r="5" />
+    <circle cx="456" cy="56" r="5" />
+    <circle cx="56" cy="456" r="5" />
+    <circle cx="456" cy="456" r="5" />
+  </g>
+
+  <!-- Central Emblem Shield / Star of Jerusalem (نجمة مثمنة) -->
+  <g transform="translate(256, 250)" filter="url(#shadow)">
+    <!-- Octagram Background Fill -->
+    <path d="M 0,-185 L 54,-130 L 130,-130 L 130,-54 L 185,0 L 130,54 L 130,130 L 54,130 L 0,185 L -54,130 L -130,130 L -130,54 L -185,0 L -130,-54 L -130,-130 L -54,-130 Z"
+          fill="#033527" stroke="url(#goldGrad)" stroke-width="4.5" />
+    <path d="M 0,-172 L 50,-122 L 122,-122 L 122,-50 L 172,0 L 122,50 L 122,122 L 50,122 L 0,172 L -50,122 L -122,122 L -122,50 L -172,0 L -122,-50 L -122,-122 L -50,-122 Z"
+          fill="none" stroke="url(#softGold)" stroke-width="1.5" opacity="0.7" />
+  </g>
+
+  <!-- Sacred Quran Book Icon (المصحف الشريف) in upper center -->
+  <g transform="translate(256, 175) scale(0.95)" filter="url(#goldGlow)">
+    <!-- Book Spine Glow -->
+    <ellipse cx="0" cy="50" rx="70" ry="12" fill="#000000" opacity="0.3" />
+    
+    <!-- Open Book Pages (Left Page) -->
+    <path d="M -8,38 C -45,18 -85,22 -115,35 C -118,36 -120,34 -120,30 L -120,-38 C -120,-42 -116,-45 -112,-46 C -82,-55 -45,-50 -8,-32 Z"
+          fill="url(#goldGrad)" stroke="#4A3810" stroke-width="2" />
+    <!-- Left Page Inner Lines -->
+    <path d="M -25,-24 C -50,-35 -80,-38 -105,-32 M -25,-6 C -50,-17 -80,-20 -105,-14 M -25,12 C -50,1 -80,-2 -105,4"
+          stroke="#42310C" stroke-width="2.5" stroke-linecap="round" opacity="0.5" />
+
+    <!-- Open Book Pages (Right Page) -->
+    <path d="M 8,38 C 45,18 85,22 115,35 C 118,36 120,34 120,30 L 120,-38 C 120,-42 116,-45 112,-46 C 82,-55 45,-50 8,-32 Z"
+          fill="url(#softGold)" stroke="#4A3810" stroke-width="2" />
+    <!-- Right Page Inner Lines -->
+    <path d="M 25,-24 C 50,-35 80,-38 105,-32 M 25,-6 C 50,-17 80,-20 105,-14 M 25,12 C 50,1 80,-2 105,4"
+          stroke="#42310C" stroke-width="2.5" stroke-linecap="round" opacity="0.5" />
+
+    <!-- Center Fold & Bookmark Ribbon -->
+    <path d="M 0,-34 L 0,42" stroke="#5C4413" stroke-width="4" stroke-linecap="round" />
+    <path d="M 0,40 L 0,68 L 10,58 L 20,68 L 20,40 Z" fill="#DC2626" />
+    <circle cx="0" cy="-35" r="5" fill="url(#goldGrad)" />
+  </g>
+
+  <!-- Revered Arabic Calligraphy: "القرآن" -->
+  <g transform="translate(256, 312)" filter="url(#goldGlow)">
+    <!-- Calligraphic Arabic Text rendered with high-contrast ornate styling -->
+    <text x="0" y="0"
+          font-family="'Amiri', 'Amiri Quran', 'Scheherazade New', 'Traditional Arabic', serif"
+          font-size="88"
+          font-weight="bold"
+          fill="url(#softGold)"
+          text-anchor="middle"
+          stroke="#4A3810"
+          stroke-width="2"
+          letter-spacing="2">
+      الْقُرْآن
+    </text>
+    
+    <!-- Subtitle: الكَرِيم -->
+    <text x="0" y="42"
+          font-family="'Amiri', 'Scheherazade New', 'Traditional Arabic', serif"
+          font-size="34"
+          font-weight="bold"
+          fill="#FCE596"
+          text-anchor="middle"
+          letter-spacing="4"
+          opacity="0.95">
+      الْكَرِيم
+    </text>
+  </g>
+
+  <!-- Tiny Domain Ribbon at Bottom: "hajj.ly" -->
+  <g transform="translate(256, 418)">
+    <rect x="-70" y="-16" width="140" height="32" rx="16" fill="#022118" stroke="url(#goldGrad)" stroke-width="2" />
+    <text x="0" y="6"
+          font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif"
+          font-size="16"
+          font-weight="800"
+          fill="url(#softGold)"
+          text-anchor="middle"
+          letter-spacing="2.5">
+      HAJJ.LY
+    </text>
+  </g>
+</svg>

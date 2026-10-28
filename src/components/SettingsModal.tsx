@@ -273,16 +273,29 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           {activeTab === 'about' && (
             <div className="space-y-4">
               <div className="p-4 bg-stone-50 dark:bg-[#15201C] rounded-xl border border-stone-200 dark:border-stone-800 space-y-2">
-                <h3 className="font-bold text-base text-stone-900 dark:text-stone-100">المصحف الشريف الرقمي (Hafs 'an 'Asim Edition)</h3>
-                <p className="text-xs sm:text-sm text-stone-600 dark:text-stone-300 leading-relaxed">
-                  تطبيق إسلامي حديث ومتكامل لخدمة كتاب الله العزيز، تم تصميمه وفق أعلى معايير الأصالة التراثية والدقة العلمية وسرعة التصفح الحديثة.
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-lg text-[#064E3B] dark:text-emerald-400 font-serif">
+                    منصة حج | hajj.ly
+                  </span>
+                  <span className="text-xs px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 font-bold border border-emerald-300 dark:border-emerald-700">
+                    البوابة الشاملة
+                  </span>
+                </div>
+                <p className="text-xs sm:text-sm text-stone-600 dark:text-stone-300 leading-relaxed font-serif">
+                  بوابة إسلامية عصرية تخدم المسلم طوال العام وفي مواسم الحج والعمرة، وتجمع:
                 </p>
+                <ul className="text-xs text-stone-700 dark:text-stone-300 pr-4 list-disc space-y-1 font-serif">
+                  <li><strong>القرآن الكريم:</strong> بالرسم العثماني المعتمد ورواية حفص عن عاصم من طريق الشاطبية وأحكام التجويد الملونة وتلاوات 20 قارئاً معتمداً.</li>
+                  <li><strong>مناسك الحج والعمرة:</strong> دليل شامل وميسر لأعمال الحج يوماً بيوم من الإحرام إلى طواف الوداع.</li>
+                  <li><strong>الأدعية والأذكار:</strong> أدعية القرآن الكريم المأثورة وأذكار اليوم والليلة.</li>
+                  <li><strong>الأحاديث النبوية:</strong> جوامع الكلم وفضائل تلاوة القرآن وثواب الحج المبرور.</li>
+                </ul>
               </div>
 
               <div className="p-3.5 bg-sky-50/70 dark:bg-sky-950/40 rounded-xl border border-sky-200 dark:border-sky-800 space-y-2 text-xs">
-                <span className="font-bold text-sky-900 dark:text-sky-200 block">النشر والاستضافة السحابية (Cloudflare Pages):</span>
-                <p className="text-stone-700 dark:text-stone-300 leading-relaxed">
-                  المشروع مهيأ 100% كـ Vite Single Page Application للبناء والنشر التلقائي بنقرة واحدة عبر Cloudflare Pages أو GitHub Pages مع دعم كامل للعمل أوفلاين دون الحاجة لخادم خلفي.
+                <span className="font-bold text-sky-900 dark:text-sky-200 block">النشر والاستضافة السحابية المعتمدة (Cloudflare Pages):</span>
+                <p className="text-stone-700 dark:text-stone-300 leading-relaxed font-serif">
+                  المشروع مهيأ 100% كـ Single Page Application سريع وخفيف يعمل على النطاق الخاص hajj.ly مع دعم كامل للأوفلاين والأداء الفائق.
                 </p>
               </div>
             </div>
