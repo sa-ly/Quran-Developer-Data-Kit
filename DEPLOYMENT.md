@@ -1,34 +1,36 @@
-# دليل النشر والتشغيل على Cloudflare Pages ومستودعات GitHub
+# دليل النشر والتشغيل على Cloudflare Pages وحل أخطاء البناء
 
-هذا المشروع مهيأ ومضبوط بالكامل ليعمل كـ **Single Page Application (Vite SPA)** فائق السرعة والأداء، وقابل للنشر التلقائي بنقرة واحدة عبر **Cloudflare Pages** و **GitHub Pages**.
-
----
-
-## 1. أسباب فشل البناء السابق في Cloudflare Pages وكيف تم حلها جذرياً:
-
-1. **إصدار بيئة Node.js:** 
-   - محركات البناء السحابية في Cloudflare قد تختار افتراضياً إصدار Node قديم.
-   - **الحل المطبق:** تمت إضافة ملفي `.nvmrc` و `.node-version` بالقيمة `20`، مما يوجّه Cloudflare تلقائياً لاستخدام Node.js 20+.
-2. **نظام التوجيه ومنع أخطاء (404 Not Found) عند التحديث:**
-   - تطبيقات Vite SPA تحتاج لإعادة توجيه كافة الطلبات إلى `index.html`.
-   - **الحل المطبق:** تمت إضافة ملف `public/_redirects` بالقاعدة القياسية:
-     ```text
-     /*    /index.html   200
-     ```
-     حيث يتم نسخه تلقائياً إلى مجلد `dist/` أثناء البناء.
-3. **المسارات النسبية للأصول (Assets & Fonts):**
-   - تم ضبط `base: './'` في `vite.config.ts` لضمان عمل كافة الخطوط وملفات الـ CSS والأصول بشكل مثالي على كل من:
-     - النطاق الفرعي المجاني لـ Cloudflare (`your-project.pages.dev`)
-     - النطاقات المخصصة المدفوعة (`yourdomain.com`)
-     - مسارات GitHub Pages الفرعية (`username.github.io/repo/`)
-4. **الاعتماد على الخادم والتدبر:**
-   - تم بناء محرك تدبر وبحث دلالي محلي متكامل (`src/utils/localTadabburEngine.ts`) يعمل 100% في جانب العميل دون الحاجة لأي خادم Node.js خلفي، مما يلغي تماماً أي خطأ من نوع `Failed to fetch from server`.
+هذا المشروع مهيأ ومضبوط بالكامل ليعمل كـ **Single Page Application (Vite SPA)** فائق السرعة والأداء، وقابل للنشر التلقائي بنقرة واحدة عبر **Cloudflare Pages** و **GitHub Pages** على النطاق الخاص **`hajj.ly`**.
 
 ---
 
-## 2. الإعدادات المعتمدة في لوحة تحكم Cloudflare Pages:
+## 🛠️ تحليل وحل خطأ البناء الأخير في Cloudflare Pages:
 
-عند ربط مستودع GitHub الخاص بك في **Cloudflare Dashboard ➔ Workers & Pages ➔ Create Application ➔ Pages ➔ Connect to Git**:
+### 1. خطأ `npm error Cannot read properties of null (reading 'edgesOut')`:
+- **سبب الخطأ:** هذا الخطأ شهير في مديري حزم `npm v9` و `npm v10` في بيئات البناء السحابية (CI)؛ وكان سببه وجود خاصية `"overrides"` متعارضة في `package.json` مع غياب ملف قفل الحزم الموحد `package-lock.json` في المستودع، مما جعل npm يفشل أثناء تحليل شجرة الاعتماديات.
+- **الحل المطبق:**
+  1. تمت إزالة خاصية `"overrides"` المتعارضة من `package.json`.
+  2. تم توليد ملف قفل حزم نظيف ومحدث ومعتمد `package-lock.json` في جذر المشروع.
+  3. بوجود `package-lock.json`، ستقوم Cloudflare بتثبيت الحزم فورياً وبأمان تام دون أي تعارض.
+
+### 2. تحذير `Found wrangler.toml file... does not appear to be valid`:
+- **سبب التحذير:** كانت خاصية `pages_build_output_dir` موضوعة تحت تصنيف فرعي `[env.production]` بينما تتطلب Cloudflare Pages وضعها في المستوى الرئيسي للملف.
+- **الحل المطبق:**
+  تم تصحيح ملف `wrangler.toml` ليصبح:
+  ```toml
+  name = "hajj-ly"
+  pages_build_output_dir = "dist"
+  compatibility_date = "2024-11-01"
+  ```
+
+### 3. إصدار بيئة Node.js المستقر (LTS):
+- تم ضبط ملفي `.nvmrc` و `.node-version` على الإصدار المستقر `20.18.0` لتفادي رسائل التحذير الخاصة بالإصدارات غير المدعومة.
+
+---
+
+## 📋 الإعدادات المعتمدة في لوحة تحكم Cloudflare Pages:
+
+في **Cloudflare Dashboard ➔ Workers & Pages ➔ hajj-ly ➔ Settings ➔ Builds & deployments**:
 
 | الإعداد (Setting) | القيمة المعتمدة (Approved Value) |
 | :--- | :--- |
@@ -36,42 +38,28 @@
 | **Build command** | `npm run build` |
 | **Build output directory** | `dist` |
 | **Root directory** | `/` (اتركه فارغاً) |
-| **Node.js Version** | `20` (يتم قراءتها تلقائياً من `.nvmrc`) |
-
-> [!TIP]
-> إذا رغبت في إضافة متغير بيئة احتياطي في Cloudflare Pages:
-> اذهب إلى **Settings ➔ Environment variables ➔ Production** وأضف:
-> `NODE_VERSION` = `20`
+| **Node.js Version** | `20.18.0` (يتم قراءتها تلقائياً من `.node-version`) |
 
 ---
 
-## 3. خطوات الرفع على GitHub والنشر التلقائي:
+## 🚀 أوامر الرفع على GitHub لتشغيل البناء الناجح:
 
-قم بتنفيذ الأوامر التالية في مجلد المشروع لرفع التحديثات إلى مستودعك:
+قم بتنفيذ الأوامر التالية في مجلد مشروعك المحلي لرفع التعديلات:
 
 ```bash
 git add .
-git commit -m "feat: Hafs 'an 'Asim Tajweed documentation and Cloudflare Pages deployment ready"
+git commit -m "fix: resolve npm edgesOut error, add package-lock.json and valid wrangler.toml"
 git push origin main
 ```
 
-بمجرد عمل `git push`، ستقوم منصة Cloudflare Pages بسحب الكود وبنائه تلقائياً خلال أقل من 60 ثانية، وستحصل على رابط حي دائم يعمل مجاناً مدى الحياة.
+بمجرد عمل `git push`، ستسحب منصة Cloudflare Pages الكود الجديد وتبنيه تلقائياً في أقل من دقيقة، وسيتحول المؤشر إلى **Success (أخضر)**.
 
 ---
 
-## 4. ربط نطاق مخصص مدفوع (Custom Domain):
+## 🌐 ربط نطاقك المخصص `hajj.ly`:
 
-بعد نجاح البناء في Cloudflare Pages:
-1. افتح مشروعك في Cloudflare Pages.
-2. اضغط على تبويب **Custom domains**.
-3. اضغط **Set up a custom domain**.
-4. اكتب اسم نطاقك: `hajj.ly`.
-5. ستقوم Cloudflare بإعداد سجلات الـ DNS وإصدار شهادة SSL مشفرة تلقائياً ومجاناً.
-
----
-
-## 5. الاعتماد والتوثيق الشرعي للنص والتجويد:
-
-- **الرواية:** رواية حفص عن عاصم بن أبي النَّجود الكوفي من طريق الشاطبية.
-- **الرسم العثماني:** مطابق لمصحف المدينة النبوية الصادر عن مجمع الملك فهد لطباعة المصحف الشريف.
-- **المصادر والتراخيص:** Tanzil.net بموجب CC BY 3.0، وخطوط مجمع الملك فهد وأميري بموجب SIL Open Font License 1.1.
+1. ادخل إلى مشروعك في **Cloudflare Pages**.
+2. افتح تبويب **Custom domains**.
+3. اضغط على **Set up a custom domain**.
+4. اكتب نطاقك: **`hajj.ly`**.
+5. ستتولى Cloudflare ربط الـ DNS وتفعيل شهادة الأمان (SSL) تلقائياً ومجاناً.
